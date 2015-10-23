@@ -3,10 +3,12 @@ package br.edu.aula.ed.arvores;
 import java.util.Collection;
 
 /**
- * Nó de uma árvore
+ * Árvore genérica
+ * @param <E> Tipo de dado a ser mantido na árvore
  */
 public interface Nodo<E> {
-
+	
+	public int tamanhoArvore();
 	public int grau();
 	public int profundidade();
 	public int altura();
@@ -22,10 +24,12 @@ public interface Nodo<E> {
 	public Collection<Nodo<E>> caminho( Nodo<E> nodoDestino );
 	public int comprimento( Nodo<E> nodoDestino );
 
+	public Nodo<E> adicionar( E elemento );
+	
 	public Collection<Nodo<E>> getFilhos();
-	public Arvore<E> getArvore();
+	public Nodo<E> getRaiz();
 	public Nodo<E> getPai();
-
+	
 	public E getElemento();
 	public void setElemento( E elemento );
 }

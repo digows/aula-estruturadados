@@ -1,112 +1,54 @@
 package br.edu.aula.ed.arvores;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public abstract class NodoAbstrato<E> implements Nodo<E> {
 
-	//------------------
-	
-	protected Arvore<E> arvore;
+	protected Nodo<E> raiz;
 	protected Nodo<E> pai;
 	protected E elemento;
 	protected Collection<Nodo<E>> filhos;
 
-	//------------------
-	
-	public NodoAbstrato( Arvore<E> arvore, E elemento, Nodo<E> nodoPai ) {
-		if (arvore == null || elemento == null) {
-			throw new IllegalArgumentException("A árvore nem elemento podem ser null");
+	// ------------------
+
+	public NodoAbstrato(E elemento, Nodo<E> nodoPai) {
+		if ( nodoPai == null || elemento == null ) {
+			throw new IllegalArgumentException("Um nodo válido precisa de um pai e um elemento.");
 		}
 		
 		this.pai = nodoPai;
-		this.arvore = arvore;
+		this.raiz = nodoPai.getRaiz();
 		this.setElemento(elemento);
-	}
-	
-	//------------------
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((arvore == null) ? 0 : arvore.hashCode());
-		result = prime * result + ((elemento == null) ? 0 : elemento.hashCode());
-		result = prime * result + ((pai == null) ? 0 : pai.hashCode());
-		return result;
+		this.filhos = new ArrayList<>();
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		NodoAbstrato<E> other = (NodoAbstrato<E>) obj;
-		if (arvore == null) {
-			if (other.arvore != null)
-				return false;
-		} else if (!arvore.equals(other.arvore))
-			return false;
-		if (elemento == null) {
-			if (other.elemento != null)
-				return false;
-		} else if (!elemento.equals(other.elemento))
-			return false;
-		if (pai == null) {
-			if (other.pai != null)
-				return false;
-		} else if (!pai.equals(other.pai))
-			return false;
-		return true;
+	public NodoAbstrato(E elementoRaiz) {
+		if ( elementoRaiz == null ) {
+			throw new IllegalArgumentException("Uma árvore precisa de um elemento raíz.");
+		}
+		
+		this.elemento = elementoRaiz;
+		this.pai = null;
+		this.filhos = new ArrayList<>();
+		this.raiz = this;
 	}
-	
-	
+
+	// ------------------
+
 	@Override
-	public Nodo<E> getPai() {
-		return this.pai;
+	public int grau() {
+		return this.getFilhos() != null ? this.getFilhos().size() : 0;
 	}
 
 	@Override
 	public int profundidade() {
-		return this.arvore.profundidade(this);
+		return NodoAbstrato.profundidade(this);
 	}
 
 	@Override
 	public int altura() {
-		return this.arvore.altura(this);
-	}
-
-	@Override
-	public boolean raiz() {
-		return this.arvore.getRaiz().equals(this);
-	}
-
-	@Override
-	public E getElemento() {
-		return this.elemento;
-	}
-
-	@Override
-	public void setElemento( E elemento ) {
-		this.elemento = elemento;
-	}
-
-	@Override
-	public Arvore<E> getArvore() {
-		return this.arvore;
-	}
-	
-	@Override
-	public Collection<Nodo<E>> getFilhos() {
-		return this.filhos;
-	}
-	
-	@Override
-	public int grau() {
-		return this.getFilhos() != null ? this.getFilhos().size() : 0;
+		return NodoAbstrato.altura(this);
 	}
 
 	@Override
@@ -120,20 +62,53 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 	}
 
 	@Override
-	public boolean formaArestaCom(Nodo<E> nodoDestino) {
-		return this.arvore.formamAresta(this, nodoDestino);
+	public boolean raiz() {
+		return this.getRaiz().equals(this);
+	}
+
+	@Override
+	public boolean formaArestaCom( Nodo<E> nodoDestino ) {
+		return NodoAbstrato.formamAresta(this, nodoDestino);
 	}
 
 	@Override
 	public Collection<Nodo<E>> caminho(Nodo<E> nodoDestino) {
-		return this.arvore.caminho(this, nodoDestino);
+		return NodoAbstrato.caminho(this, nodoDestino);
 	}
 
 	@Override
 	public int comprimento(Nodo<E> nodoDestino) {
-		return this.arvore.comprimento(this, nodoDestino);
+		return NodoAbstrato.comprimento(this, nodoDestino);
+	}
+	
+	@Override
+	public Collection<Nodo<E>> getFilhos() {
+		return this.filhos;
 	}
 
+	@Override
+	public Nodo<E> getPai() {
+		return this.pai;
+	}
+
+	@Override
+	public NodoAbstrato<E> getRaiz() {
+		if (this.raiz == null) {
+			throw new IndexOutOfBoundsException("Não existe nenhuma raiz definida.");
+		}
+		return (NodoAbstrato<E>) this.raiz;
+	}
+
+	@Override
+	public E getElemento() {
+		return this.elemento;
+	}
+
+	@Override
+	public void setElemento(E elemento) {
+		this.elemento = elemento;
+	}
+	
 	@Override
 	public boolean ancestralDe(Nodo<E> nodo) {
 		// TODO Auto-generated method stub
@@ -150,5 +125,40 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 	public boolean irmaoDe(Nodo<E> nodo) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	// ------------------
+	
+	public static <E> int profundidade(Nodo<E> nodo) {
+		if (nodo.raiz()) {
+			return 0;
+		}
+		return 1 + NodoAbstrato.profundidade(nodo.getPai());
+	}
+
+	public static <E> int altura(Nodo<E> nodo) {
+		if (nodo.externo()) {
+			return 0;
+		}
+
+		int altura = 0;
+		for (Nodo<E> nodoFilho : nodo.getFilhos()) {
+			altura = Math.max(altura, NodoAbstrato.altura(nodoFilho));
+		}
+		return 1 + altura;
+	}
+
+	public static <E> boolean formamAresta( Nodo<E> nodoOrigem, Nodo<E> nodoDestino ) {
+		return nodoOrigem.getPai().equals(nodoDestino) || nodoDestino.getPai().equals(nodoOrigem);
+	}
+
+	public static <E> Collection<Nodo<E>> caminho(Nodo<E> nodoOrigem, Nodo<E> nodoDestino) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static <E> int comprimento(Nodo<E> nodoOrigem, Nodo<E> nodoDestino) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
