@@ -32,4 +32,15 @@ public interface Nodo<E> {
 	
 	public E getElemento();
 	public void setElemento( E elemento );
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	public String toString();
+	@Override
+	public int hashCode();
+	@Override
+	public boolean equals(Object obj);
 }
