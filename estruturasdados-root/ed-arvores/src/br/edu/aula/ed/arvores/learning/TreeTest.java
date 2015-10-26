@@ -1,4 +1,4 @@
-package br.edu.aula.ed.arvores.lista;
+package br.edu.aula.ed.arvores.learning;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
