@@ -10,6 +10,16 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 
 	// ------------------
 
+	public NodoAbstrato(E elementoRaiz) {
+		if (elementoRaiz == null) {
+			throw new IllegalArgumentException("Uma árvore precisa de um elemento raíz.");
+		}
+
+		this.elemento = elementoRaiz;
+		this.pai = null;
+		this.raiz = this;
+	}
+	
 	public NodoAbstrato(E elemento, Nodo<E> nodoPai) {
 		if (nodoPai == null || elemento == null) {
 			throw new IllegalArgumentException("Um nodo válido precisa de um pai e um elemento.");
@@ -20,21 +30,52 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 		this.setElemento(elemento);
 	}
 
-	public NodoAbstrato(E elementoRaiz) {
-		if (elementoRaiz == null) {
-			throw new IllegalArgumentException("Uma árvore precisa de um elemento raíz.");
-		}
-
-		this.elemento = elementoRaiz;
-		this.pai = null;
-		this.raiz = this;
-	}
-
 	// ------------------
 
 	@Override
 	public int grau() {
 		return this.getFilhos() != null ? this.getFilhos().size() : 0;
+	}
+	
+	@Override
+	public boolean externo() {
+		return this.getFilhos() == null || this.getFilhos().isEmpty();
+	}
+
+	@Override
+	public boolean interno() {
+		return !this.externo();
+	}
+	
+	@Override
+	public Nodo<E> getPai() {
+		if ( this.pai == null ) {
+			throw new IndexOutOfBoundsException("Este nodo não contém um pai. É uma raíz?");
+		}
+		return this.pai;
+	}
+
+	@Override
+	public NodoAbstrato<E> getRaiz() {
+		if (this.raiz == null) {
+			throw new IndexOutOfBoundsException("Não existe nenhuma raiz definida.");
+		}
+		return (NodoAbstrato<E>) this.raiz;
+	}
+	
+	@Override
+	public boolean irmaoDe(Nodo<E> nodo) {
+		return this.getPai().getFilhos().contains(nodo);
+	}
+	
+	@Override
+	public E getElemento() {
+		return this.elemento;
+	}
+
+	@Override
+	public void setElemento(E elemento) {
+		this.elemento = elemento;
 	}
 
 	@Override
@@ -45,16 +86,6 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 	@Override
 	public int altura() {
 		return NodoAbstrato.altura(this);
-	}
-
-	@Override
-	public boolean externo() {
-		return this.getFilhos() == null || this.getFilhos().isEmpty();
-	}
-
-	@Override
-	public boolean interno() {
-		return !this.externo();
 	}
 
 	@Override
@@ -78,32 +109,6 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 	}
 
 	@Override
-	public Nodo<E> getPai() {
-		if ( this.pai == null ) {
-			throw new IndexOutOfBoundsException("Este nodo não contém um pai. É uma raíz?");
-		}
-		return this.pai;
-	}
-
-	@Override
-	public NodoAbstrato<E> getRaiz() {
-		if (this.raiz == null) {
-			throw new IndexOutOfBoundsException("Não existe nenhuma raiz definida.");
-		}
-		return (NodoAbstrato<E>) this.raiz;
-	}
-
-	@Override
-	public E getElemento() {
-		return this.elemento;
-	}
-
-	@Override
-	public void setElemento(E elemento) {
-		this.elemento = elemento;
-	}
-
-	@Override
 	public boolean ancestralDe(Nodo<E> nodo) {
 		return NodoAbstrato.temAscendencia(this, nodo);
 	}
@@ -113,15 +118,11 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 		return NodoAbstrato.temDescendencia(this, nodo);
 	}
 
-	@Override
-	public boolean irmaoDe(Nodo<E> nodo) {
-		return this.getPai().getFilhos().contains(nodo);
-	}
 
 	// ------------------
 	@Override
 	public String toString() {
-		return NodoAbstrato.representacaoHierarquica(this).toString();
+		return NodoAbstrato.representarComChavesAninhadas(this).toString();
 	}
 
 	@Override
@@ -164,7 +165,7 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 	}
 
 	// ------------------
-	public static <E> StringBuilder representacaoHierarquica( Nodo<E> nodo ) {
+	public static <E> StringBuilder representarComChavesAninhadas( Nodo<E> nodo ) {
 
 		final StringBuilder builder = new StringBuilder( nodo.getElemento().toString() );
 		
@@ -174,10 +175,10 @@ public abstract class NodoAbstrato<E> implements Nodo<E> {
 			
 			for ( Nodo<E> nodoFilho :  nodo.getFilhos() )
 				if (firstTime) {
-					builder.append(" { " + representacaoHierarquica(nodoFilho) ); // the first child
+					builder.append(" { " + representarComChavesAninhadas(nodoFilho) ); // the first child
 					firstTime = false;
 				} else
-					builder.append( ", " + representacaoHierarquica(nodoFilho) ); // subsequent child
+					builder.append( ", " + representarComChavesAninhadas(nodoFilho) ); // subsequent child
 			builder.append( " }" ); // close parenthesis
 		}
 		
