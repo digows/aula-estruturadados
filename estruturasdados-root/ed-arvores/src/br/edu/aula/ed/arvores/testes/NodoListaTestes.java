@@ -3,14 +3,41 @@ package br.edu.aula.ed.arvores.testes;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.edu.aula.ed.arvores.Nodo;
+import br.edu.aula.ed.arvores.NodoAbstrato;
 import br.edu.aula.ed.arvores.lista.NodoLista;
 
 public class NodoListaTestes {
 
 	@Test
+	public void profundidadeDevePassar() {
+		final NodoAbstrato<String> arvore = new NodoLista<>("0");
+		final NodoAbstrato<String> nodo1 = arvore.adicionar("1");
+		final NodoAbstrato<String> nodo11 = nodo1.adicionar("1.1");
+		final NodoAbstrato<String> nodo111 = nodo11.adicionar("1.1.1");
+		
+		Assert.assertEquals( 3, nodo111.profundidade() );
+	}
+	
+	@Test
+	public void grauDevePassarComFilhos() {
+		final NodoLista<String> arvore = new NodoLista<>("R");
+		arvore.adicionar("Filho 1");
+		arvore.adicionar("Filho 2");
+		arvore.adicionar("Filho 3");
+		
+		Assert.assertEquals(3, arvore.grau());
+	}
+	
+	@Test
+	public void grauDevePassarSemFilhos() {
+		final NodoLista<String> arvore = new NodoLista<>("R");
+		Assert.assertEquals(0, arvore.grau());
+	}
+	
+	
+	@Test
 	public void raizDevePassar() {
-		final Nodo<String> arvore = new NodoLista<>("Raiz");
+		final NodoAbstrato<String> arvore = new NodoLista<>("Raiz");
 		
 		Assert.assertNotNull( "A raiz está nula", arvore.getRaiz() );
 		Assert.assertEquals( 1, arvore.tamanhoArvore() );
@@ -26,9 +53,9 @@ public class NodoListaTestes {
 	
 	@Test
 	public void adicionaUmNodoDevePassar() {
-		final Nodo<String> arvore = new NodoLista<>("Raiz");
+		final NodoAbstrato<String> arvore = new NodoLista<>("Raiz");
 		
-		final Nodo<String> nodoFilho = arvore.getRaiz().adicionar("Filho");
+		final NodoAbstrato<String> nodoFilho = arvore.getRaiz().adicionar("Filho");
 
 		Assert.assertNotNull( nodoFilho );
 		
@@ -67,7 +94,7 @@ public class NodoListaTestes {
 	 */
 	@Test
 	public void adicionaVariosNodosDevePassar() {
-		final Nodo<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
 		texto.getRaiz()
 			.adicionar("A")
 					.adicionar("B")
@@ -91,11 +118,11 @@ public class NodoListaTestes {
 	
 	@Test
 	public void formaArestaDevePassar() {
-		final Nodo<String> texto = new NodoLista<>("Alfabeto");
-		final Nodo<String> a = texto.adicionar("A");
-		final Nodo<String> b = a.adicionar("B");
-		final Nodo<String> c = b.adicionar("C");
-		final Nodo<String> d = c.adicionar("D");
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> a = texto.adicionar("A");
+		final NodoAbstrato<String> b = a.adicionar("B");
+		final NodoAbstrato<String> c = b.adicionar("C");
+		final NodoAbstrato<String> d = c.adicionar("D");
 		
 		Assert.assertTrue( a.formaArestaCom(b) );
 		Assert.assertTrue( b.formaArestaCom(c) );
@@ -109,13 +136,13 @@ public class NodoListaTestes {
 	
 	@Test
 	public void irmaoDeDevePassar() {
-		final Nodo<String> texto = new NodoLista<>("Alfabeto");
-		final Nodo<String> a = texto.adicionar("A");
-		final Nodo<String> a1 = a.adicionar("A1");
-		final Nodo<String> a2 = a.adicionar("A2");
-		final Nodo<String> a3 = a.adicionar("A3");
-		final Nodo<String> b = texto.adicionar("B");
-		final Nodo<String> b1 = b.adicionar("B1");
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> a = texto.adicionar("A");
+		final NodoAbstrato<String> a1 = a.adicionar("A1");
+		final NodoAbstrato<String> a2 = a.adicionar("A2");
+		final NodoAbstrato<String> a3 = a.adicionar("A3");
+		final NodoAbstrato<String> b = texto.adicionar("B");
+		final NodoAbstrato<String> b1 = b.adicionar("B1");
 		
 		Assert.assertTrue( a.irmaoDe(b) );
 		Assert.assertTrue( a1.irmaoDe(a2) );
@@ -127,21 +154,21 @@ public class NodoListaTestes {
 	
 	@Test
 	public void descendenteDeDevePassar() {
-		final Nodo<String> texto = new NodoLista<>("Alfabeto");
-		final Nodo<String> a = texto.adicionar("A");
-		final Nodo<String> a1 = a.adicionar("A1");
-		final Nodo<String> a2 = a.adicionar("A2");
-		final Nodo<String> a3 = a.adicionar("A3");
-		final Nodo<String> a31 = a3.adicionar("A31");
-		final Nodo<String> a32 = a3.adicionar("A32");
-		final Nodo<String> a33 = a3.adicionar("A33");
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> a = texto.adicionar("A");
+		final NodoAbstrato<String> a1 = a.adicionar("A1");
+		final NodoAbstrato<String> a2 = a.adicionar("A2");
+		final NodoAbstrato<String> a3 = a.adicionar("A3");
+		final NodoAbstrato<String> a31 = a3.adicionar("A31");
+		final NodoAbstrato<String> a32 = a3.adicionar("A32");
+		final NodoAbstrato<String> a33 = a3.adicionar("A33");
 		
-		final Nodo<String> b = texto.adicionar("B");
-		final Nodo<String> b1 = b.adicionar("B1");
-		final Nodo<String> b2 = b.adicionar("B2");
-		final Nodo<String> b21 = b2.adicionar("B21");
-		final Nodo<String> b22 = b2.adicionar("B22");
-		final Nodo<String> b23 = b2.adicionar("B23");
+		final NodoAbstrato<String> b = texto.adicionar("B");
+		final NodoAbstrato<String> b1 = b.adicionar("B1");
+		final NodoAbstrato<String> b2 = b.adicionar("B2");
+		final NodoAbstrato<String> b21 = b2.adicionar("B21");
+		final NodoAbstrato<String> b22 = b2.adicionar("B22");
+		final NodoAbstrato<String> b23 = b2.adicionar("B23");
 		
 		Assert.assertTrue( b23.descendenteDe(b) );
 		Assert.assertTrue( b23.descendenteDe(b2) );
@@ -164,28 +191,31 @@ public class NodoListaTestes {
 	
 	@Test
 	public void ancestralDeDevePassar() {
-		final Nodo<String> texto = new NodoLista<>("Alfabeto");
-		final Nodo<String> a = texto.adicionar("A");
-		final Nodo<String> a1 = a.adicionar("A1");
-		final Nodo<String> a2 = a.adicionar("A2");
-		final Nodo<String> a3 = a.adicionar("A3");
-		final Nodo<String> a31 = a3.adicionar("A31");
-		final Nodo<String> a32 = a3.adicionar("A32");
-		final Nodo<String> a33 = a3.adicionar("A33");
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> a = texto.adicionar("A");
+		final NodoAbstrato<String> a1 = a.adicionar("A1");
+		final NodoAbstrato<String> a2 = a.adicionar("A2");
+		final NodoAbstrato<String> a3 = a.adicionar("A3");
+		final NodoAbstrato<String> a31 = a3.adicionar("A31");
+		final NodoAbstrato<String> a32 = a3.adicionar("A32");
+		final NodoAbstrato<String> a33 = a3.adicionar("A33");
 		
-		final Nodo<String> b = texto.adicionar("B");
-		final Nodo<String> b1 = b.adicionar("B1");
-		final Nodo<String> b2 = b.adicionar("B2");
-		final Nodo<String> b21 = b2.adicionar("B21");
-		final Nodo<String> b22 = b2.adicionar("B22");
-		final Nodo<String> b23 = b2.adicionar("B23");
+		final NodoAbstrato<String> b = texto.adicionar("B");
+		final NodoAbstrato<String> b1 = b.adicionar("B1");
+		final NodoAbstrato<String> b2 = b.adicionar("B2");
+		final NodoAbstrato<String> b21 = b2.adicionar("B21");
+		final NodoAbstrato<String> b22 = b2.adicionar("B22");
+		final NodoAbstrato<String> b23 = b2.adicionar("B23");
 		
 		Assert.assertTrue( a3.ancestralDe(a31) );
 		
-		Assert.assertTrue( texto.ancestralDe(a33) );
 		Assert.assertTrue( texto.ancestralDe(b23) );
+		Assert.assertTrue( texto.ancestralDe(a33) );
 		Assert.assertTrue( texto.ancestralDe(a1) );
+		Assert.assertTrue( texto.ancestralDe(a2) );
+		Assert.assertTrue( texto.ancestralDe(a3) );
 		Assert.assertTrue( texto.ancestralDe(b1) );
+		Assert.assertTrue( texto.ancestralDe(b2) );
 		
 		Assert.assertTrue( a.ancestralDe(a31) );
 		Assert.assertTrue( a.ancestralDe(a32) );
@@ -201,5 +231,7 @@ public class NodoListaTestes {
 		Assert.assertFalse( a1.ancestralDe(a2) );
 		Assert.assertFalse( b1.ancestralDe(b2) );
 		Assert.assertFalse( a33.ancestralDe(b23) );
+		Assert.assertFalse( a3.ancestralDe(b2) );
+		Assert.assertFalse( b2.ancestralDe(a2) );
 	}
 }

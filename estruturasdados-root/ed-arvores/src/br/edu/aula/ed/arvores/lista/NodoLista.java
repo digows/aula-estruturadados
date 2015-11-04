@@ -3,18 +3,17 @@ package br.edu.aula.ed.arvores.lista;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.edu.aula.ed.arvores.Nodo;
 import br.edu.aula.ed.arvores.NodoAbstrato;
 
 public class NodoLista<E> extends NodoAbstrato<E> {
 
-	protected Set<Nodo<E>> filhos = new HashSet<>();
+	protected Set<NodoAbstrato<E>> filhos = new HashSet<>();
 	
 	protected int tamanhoArvore = 0;
 
 	// ------------------
 
-	public NodoLista(E elemento, Nodo<E> nodoPai) {
+	public NodoLista(E elemento, NodoAbstrato<E> nodoPai) {
 		super(elemento, nodoPai);
 	}
 
@@ -27,7 +26,7 @@ public class NodoLista<E> extends NodoAbstrato<E> {
 	@Override
 	public NodoLista<E> adicionar(E elemento) {
 
-		final Nodo<E> nodoFilho = new NodoLista<E>(elemento, this);
+		final NodoAbstrato<E> nodoFilho = new NodoLista<E>(elemento, this);
 		this.filhos.add(nodoFilho);
 
 		final NodoLista<E> raiz = (NodoLista<E>) super.getRaiz();
@@ -42,7 +41,7 @@ public class NodoLista<E> extends NodoAbstrato<E> {
 	}
 
 	@Override
-	public Set<Nodo<E>> getFilhos() {
+	public Set<NodoAbstrato<E>> getFilhos() {
 		return this.filhos;
 	}
 }
