@@ -8,12 +8,11 @@ import br.edu.aula.ed.arvores.NodoAbstrato;
 public class NodoLista<E> extends NodoAbstrato<E> {
 
 	protected Set<NodoAbstrato<E>> filhos = new HashSet<>();
-	
 	protected int tamanhoArvore = 0;
 
 	// ------------------
 
-	public NodoLista(E elemento, NodoAbstrato<E> nodoPai) {
+	public NodoLista(E elemento, NodoLista<E> nodoPai) {
 		super(elemento, nodoPai);
 	}
 
@@ -31,7 +30,7 @@ public class NodoLista<E> extends NodoAbstrato<E> {
 
 		final NodoLista<E> raiz = (NodoLista<E>) super.getRaiz();
 		raiz.tamanhoArvore++;
-
+		
 		return (NodoLista<E>) nodoFilho;
 	}
 

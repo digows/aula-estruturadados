@@ -1,5 +1,8 @@
 package br.edu.aula.ed.arvores.testes;
 
+import java.util.List;
+import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,19 +10,98 @@ import br.edu.aula.ed.arvores.NodoAbstrato;
 import br.edu.aula.ed.arvores.lista.NodoLista;
 
 public class NodoListaTestes {
+	
+	@Test
+	public void adicionaDevePassar() {
+		final NodoLista<String> organograma = new NodoLista<String>("Fábio & Rosycler");
+		organograma
+				.adicionar("Silvia")
+					.adicionar("Alessandra")
+						.adicionar("Luciano")
+					.getPai()
+						.adicionar("Rodrigo")
+					.getPai()
+						.adicionar("Joao");
+		
+		Assert.assertEquals( new NodoLista<String>("Fábio & Rosycler"), organograma);
+		Assert.assertEquals( 6, organograma.tamanhoArvore() );
+		Assert.assertEquals( 3, organograma.altura() );
+		
+		final Set<NodoAbstrato<String>> filhos = organograma.getFilhos();
+		Assert.assertEquals( 1, filhos.size() );
+	}
+	
+	/**
+	 * 		     Alfabeto
+	 * 		a		b		c
+	 *    a1
+	 *  a11 
+	 */
+	@Test
+	public void descendenteEAscendenteDevePassar() {
+		final NodoLista<String> alfabeto = new NodoLista<String>("Alfabeto");
+		final NodoLista<String> a = alfabeto.adicionar("a");
+		final NodoLista<String> a1 = a.adicionar("a1");
+		final NodoLista<String> a11 = a1.adicionar("a11");
+		
+		final NodoLista<String> b = alfabeto.adicionar("b");
+		final NodoLista<String> c = alfabeto.adicionar("c");
+		
+		Assert.assertTrue( alfabeto.ancestralDe(a11) );
+		Assert.assertTrue( a.ancestralDe(a1) );
+		Assert.assertTrue( a.ancestralDe(a11) );
+		
+		Assert.assertFalse( a11.ancestralDe(a) );
+		Assert.assertFalse( b.ancestralDe(a1) );
+		
+		Assert.assertTrue( a1.descendenteDe(a) );
+		Assert.assertTrue( b.descendenteDe(alfabeto) );
+		
+		Assert.assertFalse( a1.descendenteDe(c) );
+	}
+	
+	/**
+	 * C:/Windows/fonts/
+	 * C:/Windows/System32/temp/
+	 * C:/Windows/System32/drives/
+	 * C:/Windows/System32/xova/
+	 * C:/Windows/System32/xnxx/
+	 */
+	@Test 
+	public void caminhoSistemaArquivosDevePassar(){
+		final NodoLista<String> c = new NodoLista<String>("C:/");
+		final NodoLista<String> windows = c.adicionar("Windows/");
+		final NodoLista<String> system32 = windows.adicionar("System 32/");
+		system32
+			.adicionar("temp/")
+			.getPai()
+				.adicionar("drivers/")
+			.getPai()
+				.adicionar("xova/")
+			.getPai()
+				.adicionar("xnxx/");
+
+		final NodoLista<String> fonts = windows.adicionar("Fonts");  
+		
+		final List<NodoAbstrato<String>> caminho = c.caminho(fonts);
+		
+		Assert.assertEquals(3, c.comprimento(fonts));
+		Assert.assertEquals(3, caminho.size());
+		
+	}
 
 	@Test
 	public void profundidadeDevePassar() {
-		final NodoAbstrato<String> arvore = new NodoLista<>("0");
-		final NodoAbstrato<String> nodo1 = arvore.adicionar("1");
-		final NodoAbstrato<String> nodo11 = nodo1.adicionar("1.1");
-		final NodoAbstrato<String> nodo111 = nodo11.adicionar("1.1.1");
+		final NodoLista<String> arvore = new NodoLista<>("0");
+		final NodoLista<String> nodo1 = arvore.adicionar("1");
+		final NodoLista<String> nodo11 = nodo1.adicionar("1.1");
+		final NodoLista<String> nodo111 = nodo11.adicionar("1.1.1");
 		
 		Assert.assertEquals( 3, nodo111.profundidade() );
 	}
 	
 	@Test
-	public void grauDevePassarComFilhos() {
+	public void grauComFilhosDevePassar() {
 		final NodoLista<String> arvore = new NodoLista<>("R");
 		arvore.adicionar("Filho 1");
 		arvore.adicionar("Filho 2");
@@ -29,11 +111,10 @@ public class NodoListaTestes {
 	}
 	
 	@Test
-	public void grauDevePassarSemFilhos() {
+	public void grauSemFilhosDevePassar() {
 		final NodoLista<String> arvore = new NodoLista<>("R");
 		Assert.assertEquals(0, arvore.grau());
 	}
-	
 	
 	@Test
 	public void raizDevePassar() {
@@ -233,5 +314,69 @@ public class NodoListaTestes {
 		Assert.assertFalse( a33.ancestralDe(b23) );
 		Assert.assertFalse( a3.ancestralDe(b2) );
 		Assert.assertFalse( b2.ancestralDe(a2) );
+	}
+	
+	@Test
+	public void caminhoAscendenteDevePassar() {
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> a = texto.adicionar("A");
+		final NodoAbstrato<String> a1 = a.adicionar("A1");
+		final NodoAbstrato<String> a11 = a1.adicionar("A11");
+		final NodoAbstrato<String> a111 = a11.adicionar("A111");
+		
+		final List<NodoAbstrato<String>> nodos = texto.caminho(a111);
+		
+		Assert.assertEquals( 5, texto.comprimento(a111) );
+		Assert.assertEquals( 5, nodos.size() );
+		Assert.assertEquals( texto, nodos.get(0) );
+		Assert.assertEquals( a, nodos.get(1) );
+		Assert.assertEquals( a1, nodos.get(2) );
+		Assert.assertEquals( a11, nodos.get(3) );
+		Assert.assertEquals( a111, nodos.get(4) );
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void caminhoAscendenteDeveFalhar() {
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> a = texto.adicionar("A");
+		final NodoAbstrato<String> a1 = a.adicionar("A1");
+		final NodoAbstrato<String> a2 = a.adicionar("A2");
+		final NodoAbstrato<String> a11 = a1.adicionar("A11");
+		final NodoAbstrato<String> a111 = a11.adicionar("A111");
+		
+		a2.caminho(a111);
+		Assert.fail("Deveria estourar um erro de não formar um caminho.");
+	}
+	
+	@Test
+	public void caminhoDescendenteDevePassar() {
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> a = texto.adicionar("A");
+		final NodoAbstrato<String> a1 = a.adicionar("A1");
+		final NodoAbstrato<String> a11 = a1.adicionar("A11");
+		final NodoAbstrato<String> a111 = a11.adicionar("A111");
+		
+		final List<NodoAbstrato<String>> nodos = a111.caminho(texto);
+		
+		Assert.assertEquals( 5, a111.comprimento(texto) );
+		Assert.assertEquals( 5, nodos.size() );
+		Assert.assertEquals( a111, nodos.get(0) );
+		Assert.assertEquals( a11, nodos.get(1) );
+		Assert.assertEquals( a1, nodos.get(2) );
+		Assert.assertEquals( a, nodos.get(3) );
+		Assert.assertEquals( texto, nodos.get(4) );
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void caminhoDescendenteDeveFalhar() {
+		final NodoAbstrato<String> texto = new NodoLista<>("Alfabeto");
+		final NodoAbstrato<String> a = texto.adicionar("A");
+		final NodoAbstrato<String> a1 = a.adicionar("A1");
+		final NodoAbstrato<String> a2 = a.adicionar("A2");
+		final NodoAbstrato<String> a11 = a1.adicionar("A11");
+		final NodoAbstrato<String> a111 = a11.adicionar("A111");
+		
+		a111.caminho(a2);
+		Assert.fail("Deveria estourar um erro de não formar um caminho.");
 	}
 }
