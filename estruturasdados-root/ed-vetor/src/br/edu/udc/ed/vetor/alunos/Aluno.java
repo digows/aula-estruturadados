@@ -1,4 +1,4 @@
-package br.edu.udc.ed.listas;
+package br.edu.udc.ed.vetor.alunos;
 
 public class Aluno extends Object {
 	public String nome;
@@ -12,6 +12,6 @@ public class Aluno extends Object {
 	@Override
 	public boolean equals(Object object) {
 		final Aluno outro = (Aluno) object;
-		return nome.equals(outro.nome);
+		return this.nome.equals( outro.nome );
 	}
 }

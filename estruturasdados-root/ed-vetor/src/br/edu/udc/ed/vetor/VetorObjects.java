@@ -1,51 +1,51 @@
-package br.edu.udc.ed.vetor.alunos;
+package br.edu.udc.ed.vetor;
 
 import java.util.Arrays;
 
-public class VetorAlunos {
+public class VetorObjects {
 
-	// Inicializando um array de Aluno com capacidade 100.
-	private Aluno[] alunos = new Aluno[100];
+	// Inicializando um array de Object com capacidade 100.
+	private Object[] objects = new Object[100];
 
 	private int quantidade = 0;
 
 	private void verificaCapacidade() {
 		//se já estiver no máximo
-		if (this.quantidade == this.alunos.length) {
+		if (this.quantidade == this.objects.length) {
 			//dobra a capacidade
-			final Aluno[] novaArray = new Aluno[this.alunos.length * 2];
-			//copia os alunos
-			for (int i = 0; i < this.alunos.length; i++) {
-				novaArray[i] = this.alunos[i];
+			final Object[] novaArray = new Object[this.objects.length * 2];
+			//copia os objects
+			for (int i = 0; i < this.objects.length; i++) {
+				novaArray[i] = this.objects[i];
 			}
-			this.alunos = novaArray;
+			this.objects = novaArray;
 		}
 	}
 
-	public void adiciona(Aluno aluno) {
+	public void adiciona(Object object) {
 		this.verificaCapacidade();
-		this.alunos[quantidade] = aluno;
+		this.objects[quantidade] = object;
 		this.quantidade++;
 	}
 
-	public void adiciona(int posicao, Aluno aluno) {
+	public void adiciona(int posicao, Object object) {
 		if (!this.posicaoOcupada(posicao) && posicao != this.quantidade ) {
 			throw new IndexOutOfBoundsException("Posição inválida");
 		}
 		this.verificaCapacidade();
-		// desloca todos os alunos para a direita a partir da posição
+		// desloca todos os objects para a direita a partir da posição
 		for (int i = this.quantidade - 1; i >= posicao; i -= 1) {
-			this.alunos[i + 1] = this.alunos[i];
+			this.objects[i + 1] = this.objects[i];
 		}
-		this.alunos[posicao] = aluno;
+		this.objects[posicao] = object;
 		this.quantidade++;
 	}
 
-	public Aluno obtem(int posicao) {
+	public Object obtem(int posicao) {
 		if (!this.posicaoOcupada(posicao)) {
 			throw new IndexOutOfBoundsException("Posição inválida");
 		}
-		return this.alunos[posicao];
+		return this.objects[posicao];
 	}
 
 	private boolean posicaoOcupada(int posicao) {
@@ -56,16 +56,16 @@ public class VetorAlunos {
 		if (!this.posicaoOcupada(posicao)) {
 			throw new IndexOutOfBoundsException("Posição inválida");
 		}
-		// desloca os alunos da direita para a esquerda
+		// desloca os objects da direita para a esquerda
 		for (int i = posicao; i < this.quantidade - 1; i++) {
-			this.alunos[i] = this.alunos[i + 1];
+			this.objects[i] = this.objects[i + 1];
 		}
 		this.quantidade--;
 	}
 
-	public boolean contem(Aluno aluno) {
+	public boolean contem(Object object) {
 		for (int i = 0; i < this.quantidade; i++) {
-			if (aluno.equals(this.alunos[i])) {
+			if (object.equals(this.objects[i])) {
 				return true;
 			}
 		}
@@ -78,6 +78,6 @@ public class VetorAlunos {
 
 	@Override
 	public String toString() {
-		return Arrays.toString(alunos);
+		return Arrays.toString(objects);
 	}
 }

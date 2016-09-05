@@ -1,14 +1,11 @@
-package br.edu.udc.ed.espalhamento;
+package br.edu.udc.ed.espalhamento.dicionario;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import br.edu.udc.ed.vetor.Vetor;
 
 public class Dicionario {
 	
 	//Tabela bidimensional de chaves X palavras
-	private ArrayList<LinkedList<String>> tabela = 
-						new ArrayList<LinkedList<String>>();
+	private Vetor<Vetor<String>> tabela = new Vetor<Vetor<String>>();
 	
 	//Constante com a quantidade de letras
 	private final int QUANTIDADE_LETRAS = 10;
@@ -18,26 +15,28 @@ public class Dicionario {
 	//Construtor da classe Dicionario
     public Dicionario() {
         for ( int i = 0; i<QUANTIDADE_LETRAS; i++ ) {
-            final LinkedList<String> lista = new LinkedList<String>();
-            tabela.add(lista);
+            final Vetor<String> lista = new Vetor<String>();
+            this.tabela.adiciona(lista);
         }
     }
     
     private void redimensionaTabela( int novaCapacidade ) {
-        final List<String> palavras = this.todas();
-        this.tabela.clear();// remove todas as listas da tabela;
+        final Vetor<String> palavras = this.todas();
+        this.tabela = new Vetor<>();
         
         for (int i = 0; i < novaCapacidade; i++) {
-            this.tabela.add( new LinkedList<String>() );
+            this.tabela.adiciona( new Vetor<String>() );
         }
-        for (String palavra : palavras) {
-			final int indice = this.calculaIndice(palavra);
-	        this.tabela.get(indice).add(palavra);
-        } 
+        
+        for (int i = 0; i < palavras.tamanho(); i++) {
+        		final String palavra = palavras.obtem(i);
+        		final int indice = this.calculaIndice(palavra);
+	        this.tabela.obtem(indice).adiciona(palavra);
+		}
     }
     
     private void verificaCarga() {
-        int capacidade = this.tabela.size();
+        int capacidade = this.tabela.tamanho();
         double carga = (double) this.quantidade / capacidade;
         
         if (carga > 0.75) {
@@ -51,7 +50,7 @@ public class Dicionario {
         //Se a carga for >=0.25 && <= 0.75 não preciamos mexer;
     }
     
-    public int gerarCodigo( String palavra ){
+    private int gerarCodigo( String palavra ){
         int codigo = 1;
         for (int i = 0; i < palavra.length(); i++) {
             codigo = 31 * codigo + palavra.charAt(i);
@@ -59,11 +58,14 @@ public class Dicionario {
         return codigo;
     }
     
-    public int calculaIndice( String palavra ){
+    private int calculaIndice( String palavra ){
     		int codigoDeEspalhamento = this.gerarCodigo(palavra);
-    		codigoDeEspalhamento = Math.abs(codigoDeEspalhamento);
+    		//garante que o codigo seja sempre absoluto
+    		if ( codigoDeEspalhamento < 0 ) {
+    			codigoDeEspalhamento *= -1; 
+    		}
     		//Devolve um número no intervalo fechado [0, this.tabela.size() - 1]
-        return codigoDeEspalhamento % this.tabela.size();
+        return codigoDeEspalhamento % this.tabela.tamanho();
     }
     
     public void adiciona(String palavra) {
@@ -71,15 +73,24 @@ public class Dicionario {
     			this.verificaCarga();
     			
     			final int indice = this.calculaIndice(palavra);
-    	        this.tabela.get(indice).add(palavra);
+    	        this.tabela.obtem(indice).adiciona(palavra);
     	        this.quantidade++;
     		}
     }
 
     public void remove(String palavra) {
         if ( this.contem(palavra) ) {
+        	
         		final int indice = this.calculaIndice(palavra);
-            this.tabela.get(indice).remove(palavra);
+        		final Vetor<String> lista = this.tabela.obtem(indice);
+        		
+        		for (int i = 0; i < lista.tamanho(); i++) {
+				if ( lista.obtem(i).equals(palavra) ) {
+					lista.remove(i);
+					break;
+				}
+			}
+        		
             this.quantidade--;
             
             this.verificaCarga();
@@ -87,27 +98,39 @@ public class Dicionario {
         		throw new RuntimeException("Palavra "+palavra+" não existente.");
         }
     }
-
+    
     public boolean contem( String palavra ) {
     		final int indice = this.calculaIndice(palavra);
-        return this.tabela.get(indice).contains(palavra);
+        return this.tabela.obtem(indice).contem(palavra);
     }
 
-	public List<String> todas() {
-		final List<String> palavras = new ArrayList<String>();
-	    for (int i = 0; i < this.tabela.size(); i++) {
-	        palavras.addAll( this.tabela.get(i) );
+	public Vetor<String> todas() {
+		final Vetor<String> todasPalavras = new Vetor<String>();
+		
+	    for (int i = 0; i < this.tabela.tamanho(); i++) {
+	    		final Vetor<String> palavras = this.tabela.obtem(i);
+	    		
+	    		for (int j = 0; j < palavras.tamanho(); j++) {
+	    			final String palavra = palavras.obtem(j);
+				todasPalavras.adiciona( palavra );
+			}
 	    }
-	    return palavras;
+	    return todasPalavras;
 	}
 
 	public int tamanho() {
 		return this.quantidade;
 	}
 
-	public void renderiza() {
-		for (int i = 0; i < this.tabela.size(); i++) {
-			System.out.println( this.tabela.get(i) );
+	public void imprimir() {
+		
+		for (int i = 0; i < this.tabela.tamanho(); i++) {
+			final Vetor<String> palavras = this.tabela.obtem(i);
+			System.out.println("CODIGO: "+i + " --- TOTAL: "+palavras.tamanho());
+			
+			for (int j = 0; j < palavras.tamanho(); j++) {
+				System.out.println( palavras.obtem(j) );
+			}
 		}
 	}
 }
