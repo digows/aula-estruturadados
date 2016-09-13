@@ -1,4 +1,4 @@
-package br.edu.udc.ed.espalhamento.dicionario;
+package br.edu.udc.ed.tabela.dicionario;
 
 import br.edu.udc.ed.vetor.Vetor;
 
@@ -36,14 +36,14 @@ public class Dicionario {
     }
     
     private void verificaCarga() {
-        int capacidade = this.tabela.tamanho();
-        double carga = (double) this.quantidade / capacidade;
+        final int capacidade = this.tabela.tamanho();
+        final double carga = (double) this.quantidade / capacidade;
         
         if (carga > 0.75) {
             this.redimensionaTabela(capacidade * 2);
         } else if (carga < 0.25) {
         		final int novaCapacidade = capacidade / 2;
-        		if ( novaCapacidade < QUANTIDADE_LETRAS ) {
+        		if ( novaCapacidade > QUANTIDADE_LETRAS ) {
         			this.redimensionaTabela( novaCapacidade );
         		}
         } 
@@ -60,6 +60,7 @@ public class Dicionario {
     
     private int calculaIndice( String palavra ){
     		int codigoDeEspalhamento = this.gerarCodigo(palavra);
+    	
     		//garante que o codigo seja sempre absoluto
     		if ( codigoDeEspalhamento < 0 ) {
     			codigoDeEspalhamento *= -1; 
@@ -124,10 +125,15 @@ public class Dicionario {
 
 	public void imprimir() {
 		
+		System.out.println("CAPACIDADE: "+ this.tabela.tamanho() );
+		
 		for (int i = 0; i < this.tabela.tamanho(); i++) {
 			final Vetor<String> palavras = this.tabela.obtem(i);
-			System.out.println("CODIGO: "+i + " --- TOTAL: "+palavras.tamanho());
 			
+			if ( palavras.tamanho() == 0 ) continue;
+			
+			System.out.println("CODIGO: "+i + " --- TOTAL: "+palavras.tamanho());
+
 			for (int j = 0; j < palavras.tamanho(); j++) {
 				System.out.println( palavras.obtem(j) );
 			}

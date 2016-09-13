@@ -1,4 +1,4 @@
-package br.edu.udc.ed.espalhamento.testes;
+package br.edu.udc.ed.tabela.dicionario.testes;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.edu.udc.ed.espalhamento.dicionario.Dicionario;
+import br.edu.udc.ed.tabela.dicionario.Dicionario;
 import br.edu.udc.ed.vetor.Vetor;
 
 public class DicionarioTestes {
@@ -121,88 +121,20 @@ public class DicionarioTestes {
 		dicionario.imprimir();
 	}
 	
-	
-	
-//	
-//	
-//	@Test
-//	public void gerarCodigoTeste(){
-//		final Dicionario dicionario = new Dicionario();
-//		
-//		final int codigoAbacaxi = dicionario.gerarCodigo("Abacaxi");
-//		System.out.println("Abacaxi: "+ codigoAbacaxi );
-//		
-//		final int codigoAmeixa = dicionario.gerarCodigo("Ameixa");
-//		System.out.println("Ameixa: "+ codigoAmeixa );
-//		
-//		final int codigoAmorUpper = dicionario.gerarCodigo("Amor");
-//		System.out.println("AmorUpper: "+codigoAmorUpper);
-//		final int codigoAmorLower = dicionario.gerarCodigo("amor");
-//		System.out.println("AmorLower: "+codigoAmorLower);
-//		
-//		final int codigoCarro = dicionario.gerarCodigo("Carro");
-//		System.out.println("Carro: "+codigoCarro);
-//		final int codigoCorra = dicionario.gerarCodigo("Corra");
-//		System.out.println("Corra: "+codigoCorra);
-//	}
-//	
-//	@Test
-//	public void adicionaDevePassar(){
-//		final Dicionario dicionario = new Dicionario();
-//		dicionario.adiciona("UDC");
-//		dicionario.adiciona("Anglo");
-//		dicionario.adiciona("Alunos");
-//
-//		Assert.assertTrue( dicionario.contem("UDC") );
-//		Assert.assertTrue( dicionario.contem("Anglo") );
-//		Assert.assertTrue( dicionario.contem("Alunos") );
-//	}
-//	
-//	@Test
-//	public void adicionaDevePassar2(){
-//		final Dicionario dicionario = new Dicionario();
-//		dicionario.adiciona("UDC");
-//		dicionario.adiciona("Anglo");
-//		dicionario.adiciona("Alunos");
-//		
-//		Assert.assertEquals( 3, dicionario.tamanho() );
-//	}
-//	
-//	@Test
-//	public void removeDevePassar(){
-//		final Dicionario dicionario = new Dicionario();
-//		dicionario.adiciona("UDC");
-//		dicionario.adiciona("Anglo");
-//		dicionario.adiciona("Alunos");
-//		
-//		dicionario.remove("Alunos");
-//		Assert.assertEquals( 2, dicionario.tamanho() );
-//	}
-//
-//	@Test
-//	public void removeDevePassar2(){
-//		final Dicionario dicionario = new Dicionario();
-//		dicionario.adiciona("UDC");
-//		dicionario.adiciona("Anglo");
-//		dicionario.adiciona("Alunos");
-//		
-//		dicionario.remove("Alunos");
-//		//garante que NAO contém a palavra "Alunos"
-//		Assert.assertFalse( dicionario.contem("Alunos") );
-//	}
-//	
-//	@Test
-//	public void todasDevePassar(){
-//		final Dicionario dicionario = new Dicionario();
-//		dicionario.adiciona("UDC");
-//		dicionario.adiciona("Anglo");
-//		dicionario.adiciona("Alunos");
-//
-//		final Vetor<String> palavras = dicionario.todas();
-//
-//		Assert.assertTrue( palavras.contem("UDC") ); 
-//		Assert.assertTrue( palavras.contem("Anglo") ); 
-//		Assert.assertTrue( palavras.contem("Alunos") ); 
-//		Assert.assertEquals( palavras.tamanho(), 3 );
-//	}
+	@Test
+	public void cargaTest() {
+		final Dicionario dicionario = new Dicionario();
+		
+		for (int i = 0; i < 99999; i++) {
+			dicionario.adiciona( new BigInteger(40, new SecureRandom()).toString(32) );
+		}
+		
+		final Vetor<String> palavras = dicionario.todas();
+		for (int i = 0; i < palavras.tamanho(); i++) {
+			dicionario.remove( palavras.obtem(i) );
+		}
+		
+		Assert.assertEquals( 0, dicionario.tamanho() );
+		dicionario.imprimir();
+	}
 }
