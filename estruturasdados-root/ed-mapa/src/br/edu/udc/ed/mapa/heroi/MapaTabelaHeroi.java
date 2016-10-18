@@ -1,40 +1,44 @@
-package br.edu.udc.ed.mapas;
+package br.edu.udc.ed.mapa.heroi;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import br.edu.udc.ed.vetor.Vetor;
 
-public class MapaTabelaHerois {
+public class MapaTabelaHeroi {
 
-	private List<List<AssociacaoHeroi>> tabela = new ArrayList<>();
+	private Vetor<Vetor<AssociacaoHeroi>> tabela = new Vetor<>();
 	
 	private int quantidade = 0;
 
-	public MapaTabelaHerois() {
+	public MapaTabelaHeroi() {
 		for (int i = 0; i < 100; i++) {
-			this.tabela.add(new LinkedList<AssociacaoHeroi>());
+			this.tabela.adiciona(new Vetor<AssociacaoHeroi>());
 		}
 	}
 	
     private void redimensionaTabela( int novaCapacidade ) {
-    		final List<AssociacaoHeroi> associacoes = new ArrayList<>();
-    		for ( List<AssociacaoHeroi> associacoesTabela : this.tabela ) {
-    			associacoes.addAll(associacoesTabela);
-    		}
-        
-        this.tabela.clear();// remove todas as listas da tabela;
-        
+    		final Vetor<AssociacaoHeroi> associacoes = new Vetor<>();
+    		
+    		for (int i = 0; i < this.tabela.tamanho(); i++) {
+			final Vetor<AssociacaoHeroi> associacoesTabela = this.tabela.obtem(i);
+			associacoes.adiciona(associacoesTabela);
+		}
+    		
+        this.tabela = new Vetor<>();// remove todas os vetores da tabela;
+
+        //criamos a tabela com a nova capacidade
         for (int i = 0; i < novaCapacidade; i++) {
-            this.tabela.add( new LinkedList<AssociacaoHeroi>() );
+            this.tabela.adiciona( new Vetor<AssociacaoHeroi>() );
         }
-        for ( AssociacaoHeroi associacao : associacoes ) {
-            final int indice = this.calculaIndiceDaTabela(associacao.getQRCode());
-	        this.tabela.get(indice).add(associacao);
-        } 
+        
+        for (int i = 0; i < associacoes.tamanho(); i++) {
+        		final AssociacaoHeroi associacao = associacoes.obtem(i);
+        		final int indice = this.calculaIndiceDaTabela(associacao.getQRCode());
+    	        this.tabela.obtem(indice).adiciona(associacao);
+			
+		}
     }
     
     private void verificaCarga() {
-    		final int capacidade = this.tabela.size();
+    		final int capacidade = this.tabela.tamanho();
     		final double carga = (double) this.quantidade / capacidade;
         
         if (carga > 0.75) {
@@ -47,7 +51,7 @@ public class MapaTabelaHerois {
     }
 
 	private int calculaIndiceDaTabela(String qrcode) {
-		return Math.abs(qrcode.hashCode()) % this.tabela.size();
+		return Math.abs(qrcode.hashCode()) % this.tabela.tamanho();
 	}
 	
 	public void adiciona(String qrcode, Heroi heroi) {
@@ -56,19 +60,19 @@ public class MapaTabelaHerois {
 	    }
 	    this.verificaCarga();
 	    final int indice = this.calculaIndiceDaTabela(qrcode);
-	    final List<AssociacaoHeroi> lista = this.tabela.get(indice);
-	    lista.add(new AssociacaoHeroi(qrcode, heroi));
+	    final Vetor<AssociacaoHeroi> vetor = this.tabela.obtem(indice);
+	    vetor.adiciona(new AssociacaoHeroi(qrcode, heroi));
 	    this.quantidade++;
 	}
 
 	public void remove(String qrcode) {
 		final int indice = this.calculaIndiceDaTabela(qrcode);
 		
-		final List<AssociacaoHeroi> lista = this.tabela.get(indice);
-		for ( int i = 0; i<lista.size(); i++ ) {
-			final AssociacaoHeroi associacao = lista.get(i);
+		final Vetor<AssociacaoHeroi> vetor = this.tabela.obtem(indice);
+		for ( int i = 0; i<vetor.tamanho(); i++ ) {
+			final AssociacaoHeroi associacao = vetor.obtem(i);
 			if (associacao.getQRCode().equals(qrcode)) {
-				lista.remove(i);
+				vetor.remove(i);
 				this.quantidade--;
 				this.verificaCarga();
 				return;
@@ -79,10 +83,10 @@ public class MapaTabelaHerois {
 
 	public Heroi obtem( String qrcode ) {
 	    final int indice = this.calculaIndiceDaTabela(qrcode);
-	    final List<AssociacaoHeroi> lista = this.tabela.get(indice);
+	    final Vetor<AssociacaoHeroi> vetor = this.tabela.obtem(indice);
 	    
-	    for (int i = 0; i < lista.size(); i++) {
-	    		final AssociacaoHeroi associacao = lista.get(i);
+	    for (int i = 0; i < vetor.tamanho(); i++) {
+	    		final AssociacaoHeroi associacao = vetor.obtem(i);
 	        if (associacao.getQRCode().equals(qrcode)) {
 	            return associacao.getHeroi();
 	        }
@@ -94,9 +98,9 @@ public class MapaTabelaHerois {
 	public boolean contem(String qrcode) {
 		final int indice = this.calculaIndiceDaTabela(qrcode);
 
-		final List<AssociacaoHeroi> lista = this.tabela.get(indice);
-		for (int i = 0; i < lista.size(); i++) {
-			final AssociacaoHeroi associacao = lista.get(i);
+		final Vetor<AssociacaoHeroi> vetor = this.tabela.obtem(indice);
+		for (int i = 0; i < vetor.tamanho(); i++) {
+			final AssociacaoHeroi associacao = vetor.obtem(i);
 			if (associacao.getQRCode().equals(qrcode)) {
 				return true;
 			}

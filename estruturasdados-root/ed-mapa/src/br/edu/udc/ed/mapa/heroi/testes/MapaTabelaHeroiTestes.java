@@ -1,16 +1,66 @@
-package br.edu.udc.ed.mapas.testes;
+package br.edu.udc.ed.mapa.heroi.testes;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.edu.udc.ed.mapas.Heroi;
-import br.edu.udc.ed.mapas.MapaListaHerois;
+import br.edu.udc.ed.mapa.heroi.Heroi;
+import br.edu.udc.ed.mapa.heroi.MapaTabelaHeroi;
 
-public class MapaListaHeroisTestes {
+public class MapaTabelaHeroiTestes {
+	
+	@Test
+	public void testAdicionarDevePassar(){
+		final MapaTabelaHeroi herois = new MapaTabelaHeroi();
+		
+		final Heroi spiderman = new Heroi("Homem Aranha", 10F, true, false);
+		herois.adiciona("XXMMOO", spiderman);
+		
+		final Heroi goku = new Heroi("Goku", 80000F, false, true);
+		herois.adiciona("GODGOKU", goku);
+		
+		Assert.assertEquals(2, herois.tamanho());
+		Assert.assertTrue( herois.contem("GODGOKU") );
+		Assert.assertTrue( herois.contem("XXMMOO") );
+	}
+	
+	@Test
+	public void testAdicionaMilharesDevePassar(){
+		final MapaTabelaHeroi herois = new MapaTabelaHeroi();
+		
+		for (int i = 0; i < 9999; i++) {
+			herois.adiciona("QRCODE"+i, new Heroi("Homem Aranha", 10F, true, false));
+		}
+		
+		Assert.assertEquals(9999, herois.tamanho() );
+		System.out.println(herois);
+	}
+	
+	@Test
+	public void testAdicionarDevePassar2(){
+		final MapaTabelaHeroi herois = new MapaTabelaHeroi();
+		
+		final Heroi spiderman = new Heroi("Homem Aranha", 10F, true, false);
+		herois.adiciona("XXMMOO", spiderman);
+		
+		final Heroi goku = new Heroi("Goku", 80000F, false, true);
+		herois.adiciona("XXMMOO", goku);
+		
+		Assert.assertEquals(1, herois.tamanho());
+		Assert.assertTrue( herois.contem("XXMMOO") );
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testRemoveDeveFalhar(){
+		final MapaTabelaHeroi herois = new MapaTabelaHeroi();
+		
+		herois.remove("XXMMOO");
+		
+		Assert.fail("Deveria estourar um erro dizendo que o qrcode não existe");
+	}
 	
 	@Test
 	public void adicionaDevePassar(){
-		final MapaListaHerois herois = new MapaListaHerois();
+		final MapaTabelaHeroi herois = new MapaTabelaHeroi();
 		
 		final Heroi hulk = new Heroi();
 		hulk.setEspecialidade("Quebrar");
@@ -43,7 +93,7 @@ public class MapaListaHeroisTestes {
 	
 	@Test
 	public void removeDevePassar(){
-		final MapaListaHerois herois = new MapaListaHerois();
+		final MapaTabelaHeroi herois = new MapaTabelaHeroi();
 		
 		herois.adiciona("AASHKDAJSHD", new Heroi());
 		herois.adiciona("DOSAIVOSFS", new Heroi());
@@ -57,7 +107,7 @@ public class MapaListaHeroisTestes {
 	
 	@Test
 	public void obtemDevePassar() {
-		final MapaListaHerois herois = new MapaListaHerois();
+		final MapaTabelaHeroi herois = new MapaTabelaHeroi();
 		herois.adiciona("FHSVIUSCH", new Heroi());
 		herois.adiciona("DFIUSDIUFS", new Heroi());
 		herois.adiciona("SDFIUSDUFS", new Heroi());
@@ -68,10 +118,9 @@ public class MapaListaHeroisTestes {
 	}
 	
 	
-	
 	@Test
 	public void teste(){
-		final MapaListaHerois herois = new MapaListaHerois();
+		final MapaTabelaHeroi herois = new MapaTabelaHeroi();
 		herois.adiciona("ABC", new Heroi());
 		herois.adiciona("CXZ", new Heroi());
 		herois.adiciona("OIT", new Heroi());

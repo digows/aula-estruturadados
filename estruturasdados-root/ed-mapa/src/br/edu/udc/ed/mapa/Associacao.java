@@ -1,9 +1,9 @@
-package br.edu.udc.ed.mapas;
+package br.edu.udc.ed.mapa;
 
 class Associacao<C,V> {
 
-	private C chave;
-	private V valor;
+	private final C chave;
+	private final V valor;
 
 	public Associacao( C chave, V valor ) {
 		this.chave = chave;

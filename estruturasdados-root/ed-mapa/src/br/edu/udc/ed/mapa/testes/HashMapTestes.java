@@ -1,4 +1,4 @@
-package br.edu.udc.ed.mapas.testes;
+package br.edu.udc.ed.mapa.testes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.edu.udc.ed.mapas.Heroi;
+import br.edu.udc.ed.mapa.heroi.Heroi;
 
 public class HashMapTestes {
 	

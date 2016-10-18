@@ -1,9 +1,9 @@
-package br.edu.udc.ed.mapas;
+package br.edu.udc.ed.mapa.heroi;
 
 class AssociacaoHeroi {
 	
-	private String qrcode;
-	private Heroi heroi;
+	private final String qrcode;
+	private final Heroi heroi;
 
 	public AssociacaoHeroi( String qrcode, Heroi heroi ) {
 		this.qrcode = qrcode;

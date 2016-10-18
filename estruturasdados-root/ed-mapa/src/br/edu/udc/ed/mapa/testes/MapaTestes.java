@@ -1,16 +1,67 @@
-package br.edu.udc.ed.mapas.testes;
+package br.edu.udc.ed.mapa.testes;
+
+import java.lang.reflect.Field;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.edu.udc.ed.mapas.Heroi;
-import br.edu.udc.ed.mapas.MapaTabelaHerois;
+import br.edu.udc.ed.mapa.Mapa;
+import br.edu.udc.ed.mapa.heroi.Heroi;
 
-public class MapaTabelaHeroisTestes {
+public class MapaTestes {
+	
+	@Test
+	public void testAdiciona() {
+		final Mapa<String, Long> mapa = new Mapa<>();
+		mapa.adiciona("chave1", 1L);
+		mapa.adiciona("chave2", 2L);
+	}
+	
+	@Test
+	public void testString() {
+		final String a = "João";
+		System.out.println( a );
+		try {
+			final Field value = String.class.getDeclaredField("value");
+		    value.setAccessible(true); //2
+		    char [] charsDaString = (char []) value.get(a); // 3
+		    charsDaString[0] = 'X';
+		    charsDaString[1] = 'o';
+		    charsDaString[2] = 'V';
+		    System.out.println( a );
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testAdicionaMilharesDevePassar(){
+		final Mapa<String, Heroi> herois = new Mapa<>();
+		for (int i = 0; i < 99999; i++) {
+			herois.adiciona("QRCODE"+i, new Heroi("Homem Aranha", 10F, true, false));
+		}
+		Assert.assertEquals(99999, herois.tamanho() );
+		System.out.println( herois );
+	}
+	
+	
+	
+	@Test
+	public void testChaveIntegerDevePassar(){
+		final Mapa<Integer, String> mapaInt = new Mapa<>();
+		mapaInt.adiciona(1, "Um");
+		mapaInt.adiciona(2, "Dois");
+		mapaInt.adiciona(3, "Três");
+		
+		Assert.assertEquals( mapaInt.obtem(1), "Um" );
+		Assert.assertEquals( mapaInt.obtem(2), "Dois" );
+		Assert.assertEquals( mapaInt.obtem(3), "Três" );
+	}
+	
 	
 	@Test
 	public void testAdicionarDevePassar(){
-		final MapaTabelaHerois herois = new MapaTabelaHerois();
+		final Mapa<String, Heroi> herois = new Mapa<>();
 		
 		final Heroi spiderman = new Heroi("Homem Aranha", 10F, true, false);
 		herois.adiciona("XXMMOO", spiderman);
@@ -18,26 +69,15 @@ public class MapaTabelaHeroisTestes {
 		final Heroi goku = new Heroi("Goku", 80000F, false, true);
 		herois.adiciona("GODGOKU", goku);
 		
-		Assert.assertEquals(2, herois.tamanho());
+		Assert.assertEquals( 2, herois.tamanho() );
 		Assert.assertTrue( herois.contem("GODGOKU") );
 		Assert.assertTrue( herois.contem("XXMMOO") );
-	}
-	
-	@Test
-	public void testAdicionaMilharesDevePassar(){
-		final MapaTabelaHerois herois = new MapaTabelaHerois();
-		
-		for (int i = 0; i < 9999; i++) {
-			herois.adiciona("QRCODE"+i, new Heroi("Homem Aranha", 10F, true, false));
-		}
-		
-		Assert.assertEquals(9999, herois.tamanho() );
-		System.out.println(herois);
+		Assert.assertEquals( herois.obtem("XXMMOO"), spiderman);
 	}
 	
 	@Test
 	public void testAdicionarDevePassar2(){
-		final MapaTabelaHerois herois = new MapaTabelaHerois();
+		final Mapa<String, Heroi> herois = new Mapa<>();
 		
 		final Heroi spiderman = new Heroi("Homem Aranha", 10F, true, false);
 		herois.adiciona("XXMMOO", spiderman);
@@ -51,7 +91,7 @@ public class MapaTabelaHeroisTestes {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testRemoveDeveFalhar(){
-		final MapaTabelaHerois herois = new MapaTabelaHerois();
+		final Mapa<String, Heroi> herois = new Mapa<>();
 		
 		herois.remove("XXMMOO");
 		
@@ -59,19 +99,9 @@ public class MapaTabelaHeroisTestes {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	@Test
 	public void adicionaDevePassar(){
-		final MapaTabelaHerois herois = new MapaTabelaHerois();
+		final Mapa<String, Heroi> herois = new Mapa<>();
 		
 		final Heroi hulk = new Heroi();
 		hulk.setEspecialidade("Quebrar");
@@ -104,7 +134,7 @@ public class MapaTabelaHeroisTestes {
 	
 	@Test
 	public void removeDevePassar(){
-		final MapaTabelaHerois herois = new MapaTabelaHerois();
+		final Mapa<String, Heroi> herois = new Mapa<>();
 		
 		herois.adiciona("AASHKDAJSHD", new Heroi());
 		herois.adiciona("DOSAIVOSFS", new Heroi());
@@ -118,7 +148,7 @@ public class MapaTabelaHeroisTestes {
 	
 	@Test
 	public void obtemDevePassar() {
-		final MapaTabelaHerois herois = new MapaTabelaHerois();
+		final Mapa<String, Heroi> herois = new Mapa<>();
 		herois.adiciona("FHSVIUSCH", new Heroi());
 		herois.adiciona("DFIUSDIUFS", new Heroi());
 		herois.adiciona("SDFIUSDUFS", new Heroi());
@@ -128,11 +158,9 @@ public class MapaTabelaHeroisTestes {
 		Assert.assertTrue( herois.contem("ER(*@(RSD)(W") );
 	}
 	
-	
-	
 	@Test
 	public void teste(){
-		final MapaTabelaHerois herois = new MapaTabelaHerois();
+		final Mapa<String, Heroi> herois = new Mapa<>();
 		herois.adiciona("ABC", new Heroi());
 		herois.adiciona("CXZ", new Heroi());
 		herois.adiciona("OIT", new Heroi());
